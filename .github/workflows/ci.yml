@@ -1,0 +1,21 @@
+name: My First CI Pipeline
+
+on: [push] # The trigger: run every time I push code
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest # The environment: A fresh Linux server
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Step 1: Copy your code to the server
+
+      - name: Setup Node
+        uses: actions/setup-node@v4 # Step 2: Install Node.js
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install # Step 3: Install Jest
+
+      - name: Execute Tests
+        run: npm test # Step 4: Run the math test
