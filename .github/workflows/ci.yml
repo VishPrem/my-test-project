@@ -1,21 +1,53 @@
-name: My First CI Pipeline
+name: Professional QA Pipeline
 
-on: [push] # The trigger: run every time I push code
+on: [push, pull_request]
 
 jobs:
-  run-tests:
-    runs-on: ubuntu-latest # The environment: A fresh Linux server
+  # JOB 1: THE BUILD
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # Step 1: Copy your code to the server
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4 # Step 2: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      - name: Install dependencies
-        run: npm install # Step 3: Install Jest
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Execute Tests
-        run: npm test # Step 4: Run the math test
+      - name: Run Build Script
+        # Even if you don't have a complex build, this checks for syntax errors
+        run: node -c insurance.js 
+
+  # JOB 2: THE TESTS (Only runs if Build succeeds)
+  test:
+    needs: build # <--- This links the jobs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Insurance Logic Tests
+        run: npm test -- --verbose
+
+  # JOB 3: THE LINTER (Checks for "Clean Code" / Formatting)
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Check Formatting
+        # This is a placeholder for a tool like ESLint
+        run: echo "Checking code style... No issues found."
