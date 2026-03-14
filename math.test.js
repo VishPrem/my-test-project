@@ -1,4 +1,4 @@
-const calculatePremium = require('./insurance');
+const calculatePremium = require('./math');
 
 describe('Insurance Premium Automation Suite', () => {
 

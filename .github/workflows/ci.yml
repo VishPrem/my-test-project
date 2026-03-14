@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Build Script
         # Even if you don't have a complex build, this checks for syntax errors
-        run: node -c insurance.js 
+        run: node -c math.js 
 
   # JOB 2: THE TESTS (Only runs if Build succeeds)
   test:
