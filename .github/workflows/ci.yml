@@ -22,24 +22,34 @@ jobs:
         # Even if you don't have a complex build, this checks for syntax errors
         run: node -c math.js 
 
-  # JOB 2: THE TESTS (Only runs if Build succeeds)
   test:
-    needs: build # <--- This links the jobs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+        - name: Setup Node
+          uses: actions/setup-node@v4
+          with:
+            node-version: '20'
 
-      - name: Install Dependencies
-        run: npm install
+        - name: Install Dependencies
+          run: npm install
 
-      - name: Run Insurance Logic Tests
-        run: npm test -- --verbose
+        - name: Run Insurance Logic Tests
+          run: npm test -- --verbose
+
+        # --- ADD THIS SECTION BELOW ---
+        - name: Upload Test Results
+          if: always() # This ensures reports are saved even if tests fail!
+          uses: actions/upload-artifact@v4
+          with:
+            name: test-reports
+            path: |
+              test-results/
+              coverage/
+              junit.xml
 
   # JOB 3: THE LINTER (Checks for "Clean Code" / Formatting)
   lint:
